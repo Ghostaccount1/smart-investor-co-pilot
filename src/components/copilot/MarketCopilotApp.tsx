@@ -314,7 +314,7 @@ export function MarketCopilotApp() {
                   </p>
                 </div>
               </div>
-            </div>
+            </aside>
 
             <section className="flex min-h-[640px] flex-col border-l border-white/10 bg-[#0b1713] text-white">
               <div className="flex items-center gap-3 border-b border-white/10 p-5">
