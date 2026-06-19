@@ -1,0 +1,16 @@
+{
+  "manifest_version": 3,
+  "name": "Smart Investor Copilot",
+  "version": "0.1.0",
+  "description": "Context-aware market research on every approved page.",
+  "permissions": ["storage"],
+  "host_permissions": ["https://lfaziomdrpvodfctnwdm.supabase.co/*"],
+  "background": { "service_worker": "background.js", "type": "module" },
+  "content_scripts": [
+    { "matches": ["http://*/*", "https://*/*"], "js": ["content.js"], "run_at": "document_idle" }
+  ],
+  "action": { "default_title": "Smart Investor", "default_popup": "popup.html" },
+  "browser_specific_settings": {
+    "gecko": { "id": "smart-investor@example.com", "strict_min_version": "109.0" }
+  }
+}

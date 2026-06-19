@@ -1,0 +1,6 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Smart Investor</title><link rel="stylesheet" href="popup.css"></head><body><main>
+  <div class="brand"><span>SI</span><div><b>Smart Investor</b><small>One memory. Every browser.</small></div></div>
+  <section id="signedOut"><h1>Connect your research.</h1><p>Sign in with the same account you use on the dashboard.</p><form id="login"><label>Email<input id="email" type="email" required></label><label>Password<input id="password" type="password" minlength="8" required></label><p id="error"></p><button>Sign in</button></form></section>
+  <section id="signedIn" hidden><div class="success">✓</div><h1>Copilot connected.</h1><p id="identity"></p><a id="dashboard" target="_blank">Open dashboard ↗</a><button id="signOut" class="quiet">Sign out</button></section>
+  <footer>Page context stays off until you approve each site.</footer>
+</main><script type="module" src="popup.js"></script></body></html>
