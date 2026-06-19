@@ -91,11 +91,33 @@ export function MarketCopilotApp() {
   const [asking, setAsking] = useState(false);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [contextEnabled, setContextEnabled] = useState(true);
+  const [conversationId, setConversationId] = useState<string | null>(null);
   const firstName = useMemo(
     () =>
       user?.user_metadata?.display_name?.split(" ")[0] || user?.email?.split("@")[0] || "Investor",
     [user],
   );
+
+  function capturePageContext() {
+    if (!contextEnabled || typeof document === "undefined") return null;
+    const clean = (el: Element | null) =>
+      (el ? (el as HTMLElement).innerText || el.textContent || "" : "")
+        .replace(/\s+/g, " ")
+        .trim();
+    const main = document.querySelector("main,article,[role='main']") || document.body;
+    return {
+      url: window.location.href,
+      title: document.title,
+      selected: String(window.getSelection?.() || "").slice(0, 4000),
+      headings: Array.from(document.querySelectorAll("h1,h2,h3"))
+        .slice(0, 24)
+        .map(clean)
+        .filter(Boolean),
+      tables: [],
+      bodyText: clean(main).slice(0, 12000),
+      watchlist: demoWatchlist,
+    };
+  }
 
   async function ask(text = question) {
     const clean = text.trim();
@@ -108,21 +130,27 @@ export function MarketCopilotApp() {
     setQuestion("");
     setAsking(true);
     const { data, error } = await supabase.functions.invoke("copilot-chat", {
-      body: { question: clean, surface: "web", pageContext: null },
+      body: {
+        question: clean,
+        surface: "web",
+        conversationId,
+        pageContext: capturePageContext(),
+      },
     });
     setAsking(false);
-    if (error) {
-      toast.error("The analyst service is not configured yet.");
+    if (error || !data || (data as { error?: string }).error) {
+      const message =
+        (data as { error?: string } | null)?.error ||
+        error?.message ||
+        "I couldn't reach the analyst service.";
+      toast.error(message);
       setMessages((current) => [
         ...current,
-        {
-          role: "assistant",
-          content:
-            "Cloud analysis is waiting for its OpenAI and market-data secrets. The product shell, account, and memory paths are connected; add the secrets in Lovable Cloud to turn on grounded answers.",
-        },
+        { role: "assistant", content: `I couldn't complete that: ${message}` },
       ]);
       return;
     }
+    if (data.conversationId) setConversationId(data.conversationId);
     setMessages((current) => [
       ...current,
       { role: "assistant", content: data.answer, sources: data.sources },
@@ -131,6 +159,8 @@ export function MarketCopilotApp() {
 
   async function signOut() {
     await supabase.auth.signOut();
+    setMessages([]);
+    setConversationId(null);
     toast.success("Signed out securely");
   }
 
