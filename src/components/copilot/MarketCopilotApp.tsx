@@ -267,7 +267,22 @@ export function MarketCopilotApp() {
                   <Brain size={17} />
                   Memory
                 </button>
-                <button className="flex w-full items-center gap-3 rounded-xl px-3 py-3 text-left text-wh…1122 tokens truncated…e="text-sm">{item.symbol}</b>
+                <button className="flex w-full items-center gap-3 rounded-xl px-3 py-3 text-left text-white/50 hover:bg-white/5">
+                  <Activity size={17} />
+                  Watchlist
+                </button>
+              </nav>
+              <div className="mt-6">
+                <p className="mb-3 px-2 text-[10px] font-bold uppercase tracking-[0.13em] text-white/40">Watchlist</p>
+                <div className="space-y-1">
+                  {demoWatchlist.map((item) => (
+                    <div
+                      key={item.symbol}
+                      className="flex cursor-pointer items-center gap-3 rounded-xl px-3 py-3 hover:bg-white/5"
+                    >
+                      <div className="flex-1">
+                        <div className="flex items-center gap-2">
+                          <b className="text-sm">{item.symbol}</b>
                           <span
                             className={`h-1.5 w-1.5 rounded-full ${item.tone === "positive" ? "bg-[#5db17d]" : "bg-[#b4bd70]"}`}
                           />
