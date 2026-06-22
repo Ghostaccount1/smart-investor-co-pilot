@@ -516,10 +516,31 @@ export function MarketCopilotApp() {
                 Move it anywhere, minimize it when you need the screen, and carry the same memory
                 from browser to browser.
               </p>
-              <button className="mt-8 flex items-center gap-2 rounded-full bg-[#122019] px-6 py-3.5 text-sm font-bold text-white">
+              <button
+                onClick={() => {
+                  fetch("/smart-investor-extension.zip")
+                    .then((res) => {
+                      if (!res.ok) throw new Error(`Download failed: ${res.status}`);
+                      return res.blob();
+                    })
+                    .then((blob) => {
+                      const a = document.createElement("a");
+                      a.href = URL.createObjectURL(blob);
+                      a.download = "smart-investor-extension.zip";
+                      a.click();
+                      URL.revokeObjectURL(a.href);
+                    })
+                    .catch((err) => toast.error(err.message));
+                }}
+                className="mt-8 flex items-center gap-2 rounded-full bg-[#122019] px-6 py-3.5 text-sm font-bold text-white transition hover:bg-[#1a2d23]"
+              >
                 <Download size={17} />
-                Extension package included
+                Download extension (.zip)
               </button>
+              <p className="mt-3 max-w-md text-xs leading-5 text-[#5d6a63]">
+                Unzip, open <code>chrome://extensions</code>, enable Developer mode, then click
+                Load unpacked and pick the folder.
+              </p>
             </div>
             <div className="relative min-h-[500px] overflow-hidden rounded-[30px] bg-[#b8c7bf] p-6 lg:p-10">
               <div className="h-full min-h-[430px] rounded-[22px] bg-[#eef1ed] p-5 shadow-inner">
